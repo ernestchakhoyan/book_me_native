@@ -5,19 +5,18 @@ import {
     Text,
     View
 } from "react-native";
+import AppNavigation from "./src/navigation/AppNavigation";
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <Text>Book me</Text>
-            <StatusBar style="auto" />
-        </View>
+        <AppNavigation />
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        width: "100%",
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
