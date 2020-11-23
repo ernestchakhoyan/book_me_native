@@ -6,10 +6,14 @@ import {
     View
 } from "react-native";
 import AppNavigation from "./src/navigation/AppNavigation";
+import { BottomSheet } from "./src/containers";
 
 export default function App() {
     return (
-        <AppNavigation />
+        <>
+            <BottomSheet />
+            <AppNavigation />
+        </>
     );
 }
 
