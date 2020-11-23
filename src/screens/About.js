@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View,Text, StyleSheet} from 'react-native';
 
 function About(props) {
     return (
-        <View>
-            About screen
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "red" }}>
+            <Text>About screen</Text>
+            <Text>This is new p</Text>
         </View>
     );}
 

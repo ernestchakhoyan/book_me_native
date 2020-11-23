@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View,Text, StyleSheet} from 'react-native';
 
 function Home(props) {
  return (
     <View>
-       Home screen
+       <Text>Home screen</Text>
     </View>
  );}
 

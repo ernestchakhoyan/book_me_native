@@ -1,10 +1,12 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View,Text, StyleSheet} from 'react-native';
 
 function Reserves(props) {
     return (
         <View>
-            Reserves screen
+            <Text>
+                Reserves screen
+            </Text>
         </View>
     );}
 
