@@ -6,9 +6,22 @@ import {
     View
 } from "react-native";
 import { useTranslation } from "react-i18next";
+import { GET_SPOTS } from "../graphql/queries/spots";
+import { useQuery } from "@apollo/client";
 
 function Home(props) {
     const { t, i18n } = useTranslation();
+    const {loading, error, data} = useQuery(GET_SPOTS);
+
+    if(loading){
+        return (
+            <View>
+                <Text>Loading</Text>
+            </View>
+        )
+    }
+    console.log(data);
+
     return (
         <View>
             <Text>{t("notes")}</Text>

@@ -1,20 +1,19 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { ApolloProvider } from "@apollo/client";
 import {
     StyleSheet
 } from "react-native";
 import AppNavigation from "./src/navigation/AppNavigation";
 import { BottomSheet } from "./src/containers";
-
-import i18n from "./src/services/i18n";
-const initI18n = i18n;
+import client from "./src/graphql";
+import "./src/services/i18n";
 
 export default function App() {
     return (
-        <>
+        <ApolloProvider client={client}>
             <BottomSheet />
             <AppNavigation />
-        </>
+        </ApolloProvider>
     );
 }
 
