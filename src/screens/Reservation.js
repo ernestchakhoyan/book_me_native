@@ -1,15 +1,15 @@
 import React from 'react';
 import {View,Text, StyleSheet} from 'react-native';
 
-function Seats(props) {
+function Reservation(props) {
     return (
         <View>
             <Text>
-                Seats screen
+                Reservation screen
             </Text>
         </View>
     );}
 
 const styles = StyleSheet.create({});
 
-export default Seats;
+export default Reservation;

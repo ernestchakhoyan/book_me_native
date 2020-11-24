@@ -1,10 +1,12 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View,Text, StyleSheet} from 'react-native';
 
 function Privacy(props) {
     return (
         <View>
-            Privacy screen
+            <Text>
+                Privacy screen
+            </Text>
         </View>
     );}
 
