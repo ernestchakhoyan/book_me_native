@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 function HomeStack(){
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home}/>
+            <Stack.Screen name="Home" component={Home} options={{headerShown: false}}/>
             <Stack.Screen name="Reservation" component={Reservation}/>
             <Stack.Screen name="Seats" component={Seats}/>
         </Stack.Navigator>
@@ -43,9 +43,15 @@ function AppNavigator() {
         <View style={{display: "flex", flex:1}}>
             <NavigationContainer>
                 <Drawer.Navigator initialRouteName="Home">
-                    <Drawer.Screen name="Home" component={HomeScreen} />
-                    <Drawer.Screen name="About" component={About} />
-                    <Drawer.Screen name="Privacy" component={Privacy} />
+                    <Drawer.Screen name="Home" component={HomeScreen} options={{
+                        headerShown: true,
+                    }} />
+                    <Drawer.Screen name="About" component={About} options={{
+                        headerShown: true
+                    }}/>
+                    <Drawer.Screen name="Privacy" component={Privacy} options={{
+                        headerShown: true
+                    }}/>
                 </Drawer.Navigator>
             </NavigationContainer>
         </View>
