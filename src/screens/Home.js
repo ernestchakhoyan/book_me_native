@@ -15,7 +15,7 @@ import {
 } from "../styles/common";
 import { useColorScheme } from "react-native-appearance";
 
-function Home(props) {
+function Home({ navigation }) {
     const { t, i18n } = useTranslation();
     const {loading, error, data} = useQuery(GET_SPOTS);
     const colorScheme = useColorScheme();
@@ -28,12 +28,14 @@ function Home(props) {
             </View>
         )
     }
-    console.log(data);
 
     return (
         <View style={{ ...styles.wrapper, backgroundColor: isDark ? dark_bg.backgroundColor : "inherit" }}>
             <Text>{t("notes")}</Text>
-            <Button title="Click me" onPress={() => i18n.changeLanguage("am")} />
+            <Button title="Click me" onPress={() => {
+                i18n.changeLanguage("am");
+                navigation.navigate("Reservation");
+            }} />
         </View>
     );
 }

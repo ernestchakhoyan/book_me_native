@@ -1,6 +1,5 @@
 import React from "react";
 import { ApolloProvider } from "@apollo/client";
-import { StyleSheet } from "react-native";
 import {
     AppearanceProvider,
     useColorScheme
@@ -8,7 +7,6 @@ import {
 import { ThemeProvider } from "react-native-elements";
 
 import client from "./src/graphql";
-import { BottomSheet } from "./src/containers";
 import { ThemeLayout } from "./src/layouts";
 import AppNavigation from "./src/navigation/AppNavigation";
 import { themePicker } from "./src/services/theme";
@@ -23,7 +21,6 @@ export default function App() {
             <AppearanceProvider>
                 <ThemeProvider theme={themePicker(colorScheme)} useDark={colorScheme === "dark"}>
                     <ThemeLayout>
-                        <BottomSheet />
                         <AppNavigation />
                     </ThemeLayout>
                 </ThemeProvider>
