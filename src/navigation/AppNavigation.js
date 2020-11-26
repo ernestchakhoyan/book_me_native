@@ -13,7 +13,10 @@ import {
     Seats
 } from "../screens";
 import { AppHeader } from "../components";
-import { BottomSheet } from "../containers";
+import {
+    BottomSheet,
+    CustomDrawer
+} from "../containers";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -85,9 +88,12 @@ function AppNavigator() {
     return (
         <View style={{ display: "flex", flex: 1 }}>
             <NavigationContainer>
-                <Drawer.Navigator initialRouteName="Home">
+                <Drawer.Navigator
+                    initialRouteName="Home"
+                    drawerContent={(props) => <CustomDrawer {...props} />}
+                >
                     <Drawer.Screen
-                        name="Home"
+                        name="Home_"
                     >
                         {() => HomeScreen({toggleBottomSheet})}
                     </Drawer.Screen>
