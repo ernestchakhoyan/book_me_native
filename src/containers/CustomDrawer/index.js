@@ -4,20 +4,25 @@ import {
     ListItem,
     Text
 } from "react-native-elements";
-import { View } from "react-native";
+import {
+    StyleSheet,
+    View
+} from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import config from "../../constants/config";
-
+import { DropdownPicker } from "../../components";
+import { column_view } from "../../styles/common";
+import { metrics } from "../../styles/vars";
 
 function CustomDrawer(props) {
-    const {navigation} = props;
+    const { navigation } = props;
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
                 <View>
-                    <ListItem bottomDivider>
-                        <Text style={{fontSize:  13}}>Language</Text>
-                        <View style={{backgroundColor: "red", height: 20, width: 30}}/>
+                    <ListItem containerStyle={styles.lng_container} bottomDivider>
+                        <Text style={{ fontSize: 13 }}>Language</Text>
+                        <DropdownPicker />
                     </ListItem>
                 </View>
                 <View>
@@ -34,14 +39,20 @@ function CustomDrawer(props) {
                     }
                 </View>
                 <View>
-                    <ListItem bottomDivider>
-                        <Text style={{fontSize:  13}}>Preference</Text>
-                        <View style={{backgroundColor: "red", height: 20, width: 30}}/>
+                    <ListItem containerStyle={styles.lng_container} bottomDivider>
+                        <Text style={{ fontSize: 13 }}>Preference</Text>
+                        <View style={{ backgroundColor: "red", height: 20, width: 30 }} />
                     </ListItem>
                 </View>
             </DrawerContentScrollView>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    lng_container: {
+        ...column_view
+    }
+});
 
 export default CustomDrawer;

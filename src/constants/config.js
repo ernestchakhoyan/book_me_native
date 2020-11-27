@@ -15,5 +15,9 @@ export default {
             navigation: "Privacy",
             icon: "security"
         }
+    ],
+    languages: [
+        { name: "Armenian", code: "AM" },
+        { name: "USA", code: "US" },
     ]
-}
+};

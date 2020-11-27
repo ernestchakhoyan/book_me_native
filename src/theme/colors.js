@@ -4,5 +4,5 @@ export default {
     success:        "#4adda9",
     warning:        "#fab258",
     error:          "#d25764",
-    appDarkBG:      "#000000"
+    appDarkBG:      "#2d2d2d"
 }
