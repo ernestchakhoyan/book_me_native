@@ -1,27 +1,53 @@
 import * as React from "react";
+import { useState } from "react";
 import {
     Icon,
     ListItem,
-    Text
+    Text,
+    withTheme
 } from "react-native-elements";
 import {
     StyleSheet,
     View
 } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
+import { useTranslation } from "react-i18next";
+
+import { DropdownPicker, Switcher } from "../../components";
 import config from "../../constants/config";
-import { DropdownPicker } from "../../components";
+
 import { column_view } from "../../styles/common";
 import { metrics } from "../../styles/vars";
+import dark from "../../theme/dark";
+import light from "../../theme/light";
+
 
 function CustomDrawer(props) {
-    const { navigation } = props;
+    const {t} = useTranslation();
+    const { navigation, updateTheme } = props;
+    const [ isEnabled, setIsEnabled ] = useState(false);
+
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => {
+            enableDarkMode(!previousState);
+            return !previousState;
+        });
+    };
+
+    const enableDarkMode = (isDarkMode) => {
+        if (isDarkMode) {
+            updateTheme(dark);
+        } else {
+            updateTheme(light);
+        }
+    };
+
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1}}>
             <DrawerContentScrollView {...props}>
                 <View>
-                    <ListItem containerStyle={styles.lng_container} bottomDivider>
-                        <Text style={{ fontSize: 13 }}>Language</Text>
+                    <ListItem containerStyle={styles.list_container} bottomDivider>
+                        <Text style={styles.list_label}>{t("language")}</Text>
                         <DropdownPicker />
                     </ListItem>
                 </View>
@@ -39,9 +65,9 @@ function CustomDrawer(props) {
                     }
                 </View>
                 <View>
-                    <ListItem containerStyle={styles.lng_container} bottomDivider>
-                        <Text style={{ fontSize: 13 }}>Preference</Text>
-                        <View style={{ backgroundColor: "red", height: 20, width: 30 }} />
+                    <ListItem containerStyle={styles.list_container} topDivider>
+                        <Text style={styles.list_label}>{t(`${isEnabled? "light" : "dark"} mode`)}</Text>
+                        <Switcher isEnabled={isEnabled} callback={toggleSwitch} />
                     </ListItem>
                 </View>
             </DrawerContentScrollView>
@@ -50,9 +76,13 @@ function CustomDrawer(props) {
 }
 
 const styles = StyleSheet.create({
-    lng_container: {
+    list_container: {
         ...column_view
+    },
+    list_label: {
+        fontSize: 13,
+        marginBottom: metrics.spacing
     }
 });
 
-export default CustomDrawer;
+export default withTheme(CustomDrawer);

@@ -18,6 +18,6 @@ export default {
     ],
     languages: [
         { name: "Armenian", code: "AM" },
-        { name: "USA", code: "US" },
+        { name: "English", code: "US" },
     ]
 };

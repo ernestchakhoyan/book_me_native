@@ -1,16 +1,17 @@
 import React from "react";
 import { StyleSheet } from "react-native";
+import { Text } from "react-native-elements";
 import Menu, { MenuItem } from "react-native-material-menu";
 import { Flag } from "react-native-svg-flagkit";
-import config from "../../constants/config";
-import { Text } from "react-native-elements";
-import { centered } from "../../styles/common";
 import { useTranslation } from "react-i18next";
+
+import config from "../../constants/config";
+import { centered } from "../../styles/common";
 
 function DropdownPicker() {
     const [ menu, setMenu ] = React.useState(null);
     const [activeLng,setActiveLng] =  React.useState("US");
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation();
 
     const setMenuRef = ref => {
         setMenu(ref);
@@ -53,10 +54,10 @@ function DropdownPicker() {
                         <Flag
                             id={item.code}
                             size={0.2}
-                            height={120}
+                            height={80}
                         />
                         <Text style={styles.text}>
-                            {item.name}
+                            {t(item.name)}
                         </Text>
                     </MenuItem>
                 )
