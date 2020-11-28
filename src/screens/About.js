@@ -3,14 +3,12 @@ import {
     View,
     StyleSheet
 } from "react-native";
-import { useTranslation } from "react-i18next";
-import {
-    box_shadow
-} from "../styles/common";
-
-import { ScreenWrapper } from "../containers";
 import { Text } from "react-native-elements";
-import { ThemeConsumer } from 'react-native-elements';
+
+import { useTranslation } from "react-i18next";
+import { ScreenWrapper } from "../containers";
+
+import { box_shadow } from "../styles/common";
 import { metrics } from "../styles/vars";
 
 function About() {
