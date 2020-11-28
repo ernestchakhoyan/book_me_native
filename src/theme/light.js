@@ -5,5 +5,6 @@ export default {
         success:        "#24DEA0",
         warning:        "#fea52d",
         error:          "#F83245",
+        screenBG:       "#f6f6f6",
     },
 };

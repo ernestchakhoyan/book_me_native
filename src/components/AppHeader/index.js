@@ -1,8 +1,6 @@
 import React from "react";
 import {
-    StyleSheet,
-    Text,
-    View
+    StyleSheet
 } from "react-native";
 import { Header } from "react-native-elements";
 import UserAvatar from "../UserAvatar";
@@ -33,7 +31,7 @@ function AppHeader(props) {
             placement="left"
             leftComponent={{ icon: "menu", color: "#fff", onPress: handleDrawerToggle }}
             centerComponent={{ text: route.name, style: { color: "#fff" } }}
-            rightComponent={false ? { icon: "home", color: "#fff", onPress: toggleBottomSheet } : <RightComponent/>}
+            rightComponent={<RightComponent/>}
         />
     );
 }

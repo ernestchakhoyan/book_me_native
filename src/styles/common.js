@@ -26,6 +26,5 @@ export const box_shadow = {
     shadowOffset: { width: 5, height: 5 },
     shadowOpacity: 0.8,
     shadowRadius: 1,
-    elevation: 5,
-    backgroundColor: "#97c4ef",
+    elevation: 5
 }
