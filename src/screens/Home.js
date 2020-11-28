@@ -1,17 +1,25 @@
 import React from "react";
 import {
-    Button,
     StyleSheet,
-    Text,
     View
 } from "react-native";
-import { useTranslation } from "react-i18next";
-import { GET_SPOTS } from "../graphql/queries/spots";
+import { Button, Text } from 'react-native-elements';
 import { useQuery } from "@apollo/client";
+import { useTranslation } from "react-i18next";
 
-function Home(props) {
+import { GET_SPOTS } from "../graphql/queries/spots";
+
+import {
+    centered_screen,
+    dark_bg
+} from "../styles/common";
+import { useColorScheme } from "react-native-appearance";
+
+function Home({ navigation }) {
     const { t, i18n } = useTranslation();
     const {loading, error, data} = useQuery(GET_SPOTS);
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === "dark";
 
     if(loading){
         return (
@@ -20,16 +28,20 @@ function Home(props) {
             </View>
         )
     }
-    console.log(data);
 
     return (
-        <View>
+        <View style={{ ...styles.wrapper, backgroundColor: isDark ? dark_bg.backgroundColor : "inherit" }}>
             <Text>{t("notes")}</Text>
-            <Button title="Click me" onPress={() => i18n.changeLanguage("am")} />
+            <Button title="Click me" onPress={() => {
+                i18n.changeLanguage("am");
+                navigation.navigate("Reservation");
+            }} />
         </View>
     );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    wrapper: centered_screen
+});
 
 export default Home;

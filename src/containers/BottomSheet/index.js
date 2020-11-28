@@ -6,19 +6,12 @@ import {
 } from "react-native";
 import { BottomSheet } from "react-native-btr";
 
-function Sheet(props) {
-    const [visible, setVisible] = React.useState(true);
-
-    const toggleBottomNavigationView = () => {
-        setVisible(!visible);
-    }
-
+function Sheet({ visible, toggleCallback }) {
     return (
         <BottomSheet
             visible={visible}
-
-            onBackButtonPress={toggleBottomNavigationView}
-            onBackdropPress={toggleBottomNavigationView}
+            onBackButtonPress={toggleCallback}
+            onBackdropPress={toggleCallback}
         >
             <View style={styles.bottomNavigationView}>
                 <Text>Hello</Text>
