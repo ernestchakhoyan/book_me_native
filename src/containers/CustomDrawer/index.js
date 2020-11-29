@@ -55,7 +55,7 @@ function CustomDrawer(props) {
                     {
                         config.drawer_navigators.map((item, i) => (
                             <ListItem key={i} onPress={() => navigation.navigate(item.navigation)}>
-                                <Icon bra name={item.icon} />
+                                <Icon name={item.icon} />
                                 <ListItem.Content>
                                     <Text>{item.title}</Text>
                                 </ListItem.Content>
