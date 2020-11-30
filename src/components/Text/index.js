@@ -9,7 +9,7 @@ function Text(props) {
     return (
         <RNEText
             {...props}
-            style={{ ...style, color: theme.colors.text }}
+            style={{ color: theme.colors.text, ...style }}
         />
     );
 }

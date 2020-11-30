@@ -15,12 +15,14 @@ import {
 import { AppHeader } from "../components";
 import {
     BottomSheet,
-    CustomDrawer
+    CustomDrawer,
+    WelcomePage
 } from "../containers";
 import {
     Icon,
     withTheme
 } from "react-native-elements";
+import Login from "../screens/Login";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -69,7 +71,6 @@ function ReservesStack(toggleBottomSheet) {
 }
 
 function HomeScreen({ toggleBottomSheet, theme }) {
-    //TODO: Is Authorized and admin show tab bar
     return (
         <Tab.Navigator
             tabBarOptions={{
@@ -104,6 +105,27 @@ function HomeScreen({ toggleBottomSheet, theme }) {
     );
 }
 
+const InitialStack = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Welcome"
+                component={WelcomePage}
+                options={{
+                    headerShown: false
+                }}
+            />
+            <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                    headerShown: true
+                }}
+            />
+        </Stack.Navigator>
+    )
+}
+
 function AppNavigator(props) {
     const {theme}  = props;
     const [ visible, setVisible ] = React.useState(false);
@@ -119,6 +141,10 @@ function AppNavigator(props) {
                     initialRouteName="Home"
                     drawerContent={(props) => <CustomDrawer {...props} />}
                 >
+                    <Drawer.Screen
+                        name="Initial_"
+                        component={InitialStack}
+                    />
                     <Drawer.Screen
                         name="Home_"
                     >
