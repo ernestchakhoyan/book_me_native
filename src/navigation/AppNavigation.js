@@ -165,8 +165,8 @@ function AppNavigator(props) {
                             header: (props) => <AppHeader {...props} toggleBottomSheet={toggleBottomSheet} />
                         }} />
                 </Drawer.Navigator>
+                <BottomSheet visible={visible} toggleCallback={toggleBottomSheet} />
             </NavigationContainer>
-            <BottomSheet visible={visible} toggleCallback={toggleBottomSheet} />
         </View>
     );
 }

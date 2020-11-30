@@ -8,14 +8,19 @@ import {
     Icon,
     withTheme
 } from "react-native-elements";
+
+import { Text } from "../../components";
+import ScreenWrapper from "../ScreenWrapper";
+
+import { metrics } from "../../styles/vars";
+import colors from "../../theme/colors";
+
 import { isAuthorized } from "../../utils/authorization";
+
 import {
     box_shadow,
     centered_screen
 } from "../../styles/common";
-import { Text } from "../../components";
-import { metrics } from "../../styles/vars";
-import colors from "../../theme/colors";
 
 const item_border_radius = 10;
 
@@ -33,12 +38,12 @@ function WelcomePage({ navigation,  theme }) {
     }, []);
 
     return (
-        <View style={{...styles.container, backgroundColor: theme.colors.primary}}>
+        <ScreenWrapper customStyles={{...styles.container}}>
             <View style={styles.header}>
-                <Text h1 style={styles.title}>
+                <Text h1 style={{ color: theme.colors.primary }}>
                     Welcome to
                 </Text>
-                <Text h3 style={styles.title}>
+                <Text h3 style={{ color: theme.colors.primary }}>
                     book.me
                 </Text>
             </View>
@@ -67,14 +72,11 @@ function WelcomePage({ navigation,  theme }) {
                 </View>
             </View>
 
-        </View>
+        </ScreenWrapper>
     );
 }
 
 const styles = StyleSheet.create({
-    title: {
-        color: colors.light
-    },
     container: {
         flex: 1,
         ...centered_screen
@@ -107,8 +109,6 @@ const styles = StyleSheet.create({
     item_text: {
         marginTop: metrics.spacing
     },
-
-
 });
 
 export default withTheme(WelcomePage);
