@@ -6,10 +6,9 @@ import {
 import { BottomSheet } from "react-native-btr";
 import {
     Icon,
-    Text,
     withTheme
 } from "react-native-elements";
-import UserAvatar from "../../components/UserAvatar";
+import { Text,UserAvatar } from "../../components";
 import ScreenWrapper from "../ScreenWrapper";
 import colors from "../../theme/colors";
 import { metrics } from "../../styles/vars";
@@ -42,8 +41,8 @@ function Sheet(props) {
                             size="small"
                             rounded
                             title="EC"
-                            containerStyle={{backgroundColor: theme.colors.secondary,  marginRight: metrics.spacing_md()}}
-                            titleStyle={{color: "#000"}}
+                            containerStyle={{backgroundColor: theme.colors.primary,  marginRight: metrics.spacing_md()}}
+                            titleStyle={{color: theme.colors.secondary}}
                         />
                         <Text>Ernest Chakhoyan</Text>
                 </View>

@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
     Icon,
     ListItem,
-    Text,
     withTheme
 } from "react-native-elements";
 import {
@@ -13,7 +12,7 @@ import {
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useTranslation } from "react-i18next";
 
-import { DropdownPicker, Switcher } from "../../components";
+import { DropdownPicker, Switcher, Text } from "../../components";
 import config from "../../constants/config";
 
 import { column_view } from "../../styles/common";

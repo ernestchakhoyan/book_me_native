@@ -17,6 +17,10 @@ import {
     BottomSheet,
     CustomDrawer
 } from "../containers";
+import {
+    Icon,
+    withTheme
+} from "react-native-elements";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -40,7 +44,11 @@ function HomeStack(toggleBottomSheet) {
                     headerShown: true
                 }}
             />
-            <Stack.Screen name="Seats" component={Seats} options={{ headerShown: true }}/>
+            <Stack.Screen
+                name="Seats"
+                component={Seats}
+                options={{ headerShown: true }}
+            />
         </Stack.Navigator>
     );
 }
@@ -60,17 +68,35 @@ function ReservesStack(toggleBottomSheet) {
     );
 }
 
-function HomeScreen({toggleBottomSheet}) {
+function HomeScreen({ toggleBottomSheet, theme }) {
     //TODO: Is Authorized and admin show tab bar
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            tabBarOptions={{
+                activeTintColor: theme.colors.primary,
+                inactiveTintColor: theme.colors.text,
+                style: {
+                    backgroundColor: theme.colors.bottomBar
+                }
+            }}
+        >
             <Tab.Screen
                 name="Home"
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon type="font-awesome" name="home" color={color} size={size} />
+                    ),
+                }}
             >
                 {() => HomeStack(toggleBottomSheet)}
             </Tab.Screen>
             <Tab.Screen
                 name="Reserves"
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon type="font-awesome" name="bookmark" color={color} size={size} />
+                    ),
+                }}
             >
                 {() => ReservesStack(toggleBottomSheet)}
             </Tab.Screen>
@@ -78,7 +104,8 @@ function HomeScreen({toggleBottomSheet}) {
     );
 }
 
-function AppNavigator() {
+function AppNavigator(props) {
+    const {theme}  = props;
     const [ visible, setVisible ] = React.useState(false);
 
     const toggleBottomSheet = () => {
@@ -95,7 +122,7 @@ function AppNavigator() {
                     <Drawer.Screen
                         name="Home_"
                     >
-                        {() => HomeScreen({toggleBottomSheet})}
+                        {() => HomeScreen({ toggleBottomSheet, theme })}
                     </Drawer.Screen>
                     <Drawer.Screen
                         name="About"
@@ -118,4 +145,4 @@ function AppNavigator() {
     );
 }
 
-export default AppNavigator;
+export default withTheme(AppNavigator);

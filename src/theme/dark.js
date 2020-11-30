@@ -6,5 +6,7 @@ export default {
         warning:        "#fab258",
         error:          "#d25764",
         screenBG:       "#212121",
+        bottomBar:      "#404040",
+        text:           "#f6f6f6"
     },
 };
