@@ -3,10 +3,10 @@ import {
     View,
     StyleSheet
 } from "react-native";
+import { Text } from "react-native-elements";
 
 import { useTranslation } from "react-i18next";
 import { ScreenWrapper } from "../containers";
-import { Text } from "../components";
 
 import { box_shadow } from "../styles/common";
 import { metrics } from "../styles/vars";
