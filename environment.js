@@ -2,8 +2,8 @@ import Constants from "expo-constants";
 
 const ENV = {
     dev: {
-        API_URL: "http://localhost:4000/graphql",
-        WS_URL: "ws://localhost:4000/graphql"
+        API_URL: "https://book-me-server.herokuapp.com/graphql", //"http://localhost:4000/graphql",
+        WS_URL: "wss://book-me-server.herokuapp.com/graphql " //ws://localhost:4000/graphql"
     },
     prod: {
         API_URL: "https://book-me-server.herokuapp.com/graphql",

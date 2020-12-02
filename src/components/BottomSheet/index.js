@@ -1,6 +1,7 @@
 import React from "react";
 import {
     StyleSheet,
+    TouchableOpacity,
     View
 } from "react-native";
 import { BottomSheet } from "react-native-btr";
@@ -8,10 +9,14 @@ import {
     Icon,
     withTheme
 } from "react-native-elements";
-import { Text,UserAvatar } from "../../components";
-import ScreenWrapper from "../ScreenWrapper";
-import colors from "../../theme/colors";
+import { Context as AuthContext } from "../../context/AuthContext";
+
+import Text from "../Text";
+import UserAvatar from "../UserAvatar";
+import ScreenWrapper from "../../containers/ScreenWrapper";
+
 import { metrics } from "../../styles/vars";
+import colors from "../../theme/colors";
 
 const sheetHeight = 250;
 const sheetBorderRadius = 40;
@@ -25,7 +30,14 @@ const Bar = () => {
 }
 
 function Sheet(props) {
-    const { visible, toggleCallback, theme } = props;
+    const { signout } = React.useContext(AuthContext);
+    const { visible, toggleCallback, theme, navigation } = props;
+
+    const handleLogout = async () => {
+        await signout();
+        toggleCallback();
+        navigation.navigate("Initial_");
+    }
 
     return (
         <BottomSheet
@@ -48,14 +60,17 @@ function Sheet(props) {
                 </View>
 
 
-                <View style={styles.sign_out}>
+                <TouchableOpacity
+                    style={styles.sign_out}
+                    onPress={handleLogout}
+                >
                         <Text style={{marginRight: metrics.spacing_md()}}>Sign out</Text>
                         <Icon
                             type="font-awesome-5"
                             name="sign-out-alt"
                             color={theme.colors.secondary}
                         />
-                </View>
+                </TouchableOpacity>
 
             </ScreenWrapper>
         </BottomSheet>

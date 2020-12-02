@@ -5,7 +5,7 @@ export const setItemToStorage = async (key,value) => {
 }
 
 export const getItemFromStorage = async (key) => {
-    await AsyncStorage.getItem(key);
+    return await AsyncStorage.getItem(key);
 }
 
 export const removeItemFromStorage = async (key) => {

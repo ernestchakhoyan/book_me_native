@@ -1,5 +1,8 @@
 import * as React from "react";
-import { View } from "react-native";
+import {
+    ActivityIndicator,
+    View
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -14,8 +17,8 @@ import {
 } from "../screens";
 import { AppHeader } from "../components";
 import {
-    BottomSheet,
     CustomDrawer,
+    ScreenWrapper,
     WelcomePage
 } from "../containers";
 import {
@@ -23,12 +26,17 @@ import {
     withTheme
 } from "react-native-elements";
 import Login from "../screens/Login";
+import { getItemFromStorage } from "../services/storage";
+import { Context as AuthContext } from "../context/AuthContext";
+import { centered_screen } from "../styles/common";
+import Text from "../components/Text";
+import { signout } from "../actions/Authorization";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function HomeStack(toggleBottomSheet) {
+function HomeStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -36,7 +44,7 @@ function HomeStack(toggleBottomSheet) {
                 component={Home}
                 options={{
                     headerShown: true,
-                    header: (props) => <AppHeader {...props} toggleBottomSheet={toggleBottomSheet} />
+                    header: (props) => <AppHeader {...props} />
                 }}
             />
             <Stack.Screen
@@ -55,7 +63,7 @@ function HomeStack(toggleBottomSheet) {
     );
 }
 
-function ReservesStack(toggleBottomSheet) {
+function ReservesStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -63,14 +71,14 @@ function ReservesStack(toggleBottomSheet) {
                 component={Reserves}
                 options={{
                     headerShown: true,
-                    header: (props) => <AppHeader {...props} toggleBottomSheet={toggleBottomSheet} />
+                    header: (props) => <AppHeader {...props} />
                 }}
             />
         </Stack.Navigator>
     );
 }
 
-function HomeScreen({ toggleBottomSheet, theme }) {
+function HomeScreen({ theme }) {
     return (
         <Tab.Navigator
             tabBarOptions={{
@@ -89,7 +97,7 @@ function HomeScreen({ toggleBottomSheet, theme }) {
                     ),
                 }}
             >
-                {() => HomeStack(toggleBottomSheet)}
+                {() => HomeStack()}
             </Tab.Screen>
             <Tab.Screen
                 name="Reserves"
@@ -99,7 +107,7 @@ function HomeScreen({ toggleBottomSheet, theme }) {
                     ),
                 }}
             >
-                {() => ReservesStack(toggleBottomSheet)}
+                {() => ReservesStack()}
             </Tab.Screen>
         </Tab.Navigator>
     );
@@ -123,16 +131,39 @@ const InitialStack = () => {
                 }}
             />
         </Stack.Navigator>
-    )
-}
+    );
+};
 
 function AppNavigator(props) {
-    const {theme}  = props;
-    const [ visible, setVisible ] = React.useState(false);
+    const { state: { token, authorizationLoading }, signin, signout } = React.useContext(AuthContext);
+    const { theme } = props;
 
-    const toggleBottomSheet = () => {
-        setVisible(!visible);
-    };
+    React.useEffect(() => {
+        setTimeout(async () => {
+            try {
+                const token = await getItemFromStorage("access_token");
+                if (token) {
+                    signin(token);
+                }else{
+                    signout()
+                }
+            } catch (e) {
+                console.log(e);
+                signout();
+            }
+        }, 1000);
+    }, []);
+
+    if (authorizationLoading) {
+        return (
+            <ScreenWrapper customStyles={centered_screen}>
+                <ActivityIndicator
+                    size="small"
+                    color={theme.colors.primary}
+                />
+            </ScreenWrapper>
+        );
+    }
 
     return (
         <View style={{ display: "flex", flex: 1 }}>
@@ -141,32 +172,33 @@ function AppNavigator(props) {
                     initialRouteName="Home"
                     drawerContent={(props) => <CustomDrawer {...props} />}
                 >
-                    <Drawer.Screen
-                        name="Initial_"
-                        component={InitialStack}
-                    />
+                    {!token && (
+                        <Drawer.Screen
+                            name="Initial_"
+                            component={InitialStack}
+                        />
+                    )}
                     <Drawer.Screen
                         name="Home_"
                     >
-                        {() => HomeScreen({ toggleBottomSheet, theme })}
+                        {() => token ? HomeScreen({ theme }) : HomeStack()}
                     </Drawer.Screen>
                     <Drawer.Screen
                         name="About"
                         component={About}
                         options={{
                             headerShown: true,
-                            header: (props) => <AppHeader {...props} toggleBottomSheet={toggleBottomSheet} />
+                            header: (props) => <AppHeader {...props} />
                         }} />
                     <Drawer.Screen
                         name="Privacy"
                         component={Privacy}
                         options={{
                             headerShown: true,
-                            header: (props) => <AppHeader {...props} toggleBottomSheet={toggleBottomSheet} />
+                            header: (props) => <AppHeader {...props} />
                         }} />
                 </Drawer.Navigator>
             </NavigationContainer>
-            <BottomSheet visible={visible} toggleCallback={toggleBottomSheet} />
         </View>
     );
 }
