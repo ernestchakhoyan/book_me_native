@@ -9,12 +9,13 @@ import {
     Icon,
     withTheme
 } from "react-native-elements";
+import { Context as AuthContext } from "../../context/AuthContext";
+
 import { Text,UserAvatar } from "../../components";
 import ScreenWrapper from "../ScreenWrapper";
 
-import colors from "../../theme/colors";
 import { metrics } from "../../styles/vars";
-import { removeItemFromStorage } from "../../services/storage";
+import colors from "../../theme/colors";
 
 const sheetHeight = 250;
 const sheetBorderRadius = 40;
@@ -28,12 +29,13 @@ const Bar = () => {
 }
 
 function Sheet(props) {
-    const { visible, toggleCallback, theme } = props;
-
+    const { signout } = React.useContext(AuthContext);
+    const { visible, toggleCallback, theme, navigation } = props;
 
     const handleLogout = async () => {
-        await removeItemFromStorage("access_token");
-        // navigation.navigate("Welcome");
+        await signout();
+        navigation.navigate("Initial_");
+        toggleCallback();
     }
 
     return (
