@@ -6,6 +6,8 @@ import {
 } from "react-native-appearance";
 import { ThemeProvider } from "react-native-elements";
 
+import { Provider as AuthProvider } from "./src/context/AuthContext";
+
 import client from "./src/graphql";
 import { ThemeLayout } from "./src/layouts";
 import AppNavigation from "./src/navigation/AppNavigation";
@@ -21,7 +23,9 @@ export default function App() {
             <AppearanceProvider>
                 <ThemeProvider theme={themePicker(colorScheme)} useDark={colorScheme === "dark"}>
                     <ThemeLayout>
-                        <AppNavigation />
+                        <AuthProvider>
+                            <AppNavigation />
+                        </AuthProvider>
                     </ThemeLayout>
                 </ThemeProvider>
             </AppearanceProvider>

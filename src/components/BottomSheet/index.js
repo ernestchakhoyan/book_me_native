@@ -11,8 +11,9 @@ import {
 } from "react-native-elements";
 import { Context as AuthContext } from "../../context/AuthContext";
 
-import { Text,UserAvatar } from "../../components";
-import ScreenWrapper from "../ScreenWrapper";
+import Text from "../Text";
+import UserAvatar from "../UserAvatar";
+import ScreenWrapper from "../../containers/ScreenWrapper";
 
 import { metrics } from "../../styles/vars";
 import colors from "../../theme/colors";
@@ -34,8 +35,8 @@ function Sheet(props) {
 
     const handleLogout = async () => {
         await signout();
-        navigation.navigate("Initial_");
         toggleCallback();
+        navigation.navigate("Initial_");
     }
 
     return (

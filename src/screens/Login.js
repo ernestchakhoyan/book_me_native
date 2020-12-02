@@ -11,6 +11,8 @@ import {
     withTheme
 } from "react-native-elements";
 
+import { Context as AuthContext} from "../context/AuthContext";
+
 import { Text } from "../components";
 import ScreenWrapper from "../containers/ScreenWrapper";
 
@@ -22,6 +24,7 @@ import { metrics } from "../styles/vars";
 import colors from "../theme/colors";
 
 function Login({ navigation,theme }) {
+    const {signin} = React.useContext(AuthContext);
     const [ loading, setLoading ] = React.useState(false);
     const [ username, setUsername ] = React.useState("");
     const [ password, setPassword ] = React.useState("");
@@ -48,6 +51,7 @@ function Login({ navigation,theme }) {
 
             const { token } = data.login;
             await setItemToStorage("access_token", token);
+            signin(token);
             setLoading(false);
 
             navigation.navigate("Home_");
