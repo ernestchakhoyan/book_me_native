@@ -158,7 +158,7 @@ function AppNavigator(props) {
         return (
             <ScreenWrapper customStyles={centered_screen}>
                 <ActivityIndicator
-                    size="small"
+                    size="large"
                     color={theme.colors.primary}
                 />
             </ScreenWrapper>

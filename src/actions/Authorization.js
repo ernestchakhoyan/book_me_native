@@ -5,7 +5,6 @@ import {
 } from "../services/storage";
 
 export const signin = (dispatch) => async (token) => {
-    console.log(token,666);
     await setItemToStorage("access_token", token);
     dispatch({ type: types.SIGN_IN, token });
 };

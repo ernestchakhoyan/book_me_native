@@ -40,6 +40,11 @@ function Login({ navigation,theme }) {
 
     const handleLogin = async() => {
         resetError();
+
+        if(!username.trim().length || !password.trim().length){
+            return setError("Username and  password fields are required");
+        }
+
         setLoading(true);
         try {
             const { data } = await login({
