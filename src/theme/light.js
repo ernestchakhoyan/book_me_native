@@ -7,6 +7,7 @@ export default {
         error:          "#F83245",
         screenBG:       "#f6f6f6",
         bottomBar:      "#f6f6f6",
-        text:           "#212121"
+        text:           "#212121",
+        card_bg:        "#f6f6f6"
     },
 };
