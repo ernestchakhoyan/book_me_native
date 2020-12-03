@@ -1,6 +1,11 @@
 export default {
     drawer_navigators: [
         {
+            title: "Welcome",
+            navigation: "Welcome",
+            icon: "compare-arrows"
+        },
+        {
             title: "Home",
             navigation: "Home",
             icon: "home"

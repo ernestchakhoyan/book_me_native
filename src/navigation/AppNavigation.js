@@ -29,8 +29,6 @@ import Login from "../screens/Login";
 import { getItemFromStorage } from "../services/storage";
 import { Context as AuthContext } from "../context/AuthContext";
 import { centered_screen } from "../styles/common";
-import Text from "../components/Text";
-import { signout } from "../actions/Authorization";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
