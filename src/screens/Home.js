@@ -77,7 +77,6 @@ function Home({ navigation, theme }) {
                                     }}
                                     titleStyles={styles.card_title}
                                     title={item.name}
-
                                 >
                                     <View style={styles.card_content}>
                                         <Image
