@@ -48,8 +48,8 @@ function Home({ navigation, theme }) {
         );
     }
 
-    const navigateToSeats = () => {
-        navigation.navigate("Seats");
+    const navigateToSeats = (spotId, spotName) => {
+        navigation.navigate("Seats", {spotId, spotName});
     }
 
     return (
@@ -67,7 +67,7 @@ function Home({ navigation, theme }) {
                             <TouchableOpacity
                                 key={item.id}
                                 style={styles.card}
-                                onPress={navigateToSeats}
+                                onPress={() => navigateToSeats(item.id, item.name)}
                             >
                                 <Card
                                     customStyles={{
