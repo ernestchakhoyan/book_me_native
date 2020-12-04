@@ -19,7 +19,10 @@ import ScreenWrapper from "../containers/ScreenWrapper";
 import { LOGIN } from "../graphql/mutations/authorization";
 import { setItemToStorage } from "../services/storage";
 
-import { centered_screen } from "../styles/common";
+import {
+    button,
+    centered_screen
+} from "../styles/common";
 import { metrics } from "../styles/vars";
 import colors from "../theme/colors";
 
@@ -83,6 +86,9 @@ function Login({ navigation,theme }) {
                     placeholder='Username'
                     onChangeText={text => setUsername(text)}
                     autoCapitalize="none"
+                    inputStyle={{
+                        color: theme.colors.text
+                    }}
                     leftIcon={
                         <Icon
                             name='user'
@@ -98,6 +104,9 @@ function Login({ navigation,theme }) {
                     autoCapitalize="none"
                     errorMessage={error}
                     onChangeText={text => setPassword(text)}
+                    inputStyle={{
+                        color: theme.colors.text
+                    }}
                     leftIcon={
                         <Icon
                             name='lock'
@@ -108,13 +117,12 @@ function Login({ navigation,theme }) {
                     }
                 />
                 <Button
-                    style={{ ...styles.button, color: colors.light }}
+                    style={{ ...button, color: colors.light }}
                     title="Login"
                     loading={loading}
                     onPress={handleLogin}
                 />
             </View>
-
         </ScreenWrapper>
     );
 }
@@ -136,10 +144,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         width: "100%",
         padding: metrics.spacing_lg()
-    },
-    button: {
-        padding: metrics.spacing_md(),
-        width: 120
     }
 });
 

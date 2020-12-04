@@ -24,8 +24,10 @@ import { metrics } from "../../styles/vars";
 import dark from "../../theme/dark";
 import light from "../../theme/light";
 import ScreenWrapper from "../ScreenWrapper";
+import { Context as AuthContext } from "../../context/AuthContext";
 
 function CustomDrawer(props) {
+    const { state: { token }} = React.useContext(AuthContext);
     const { t } = useTranslation();
     const { navigation, updateTheme, theme } = props;
     const [ isEnabled, setIsEnabled ] = useState(false);
@@ -56,19 +58,24 @@ function CustomDrawer(props) {
                     </View>
                     <View>
                         {
-                            config.drawer_navigators.map((item, i) => (
-                                <ListItem
-                                    key={i}
-                                    onPress={() => navigation.navigate(item.navigation)}
-                                    containerStyle={styles.list_item}
-                                >
-                                    <Icon name={item.icon} color={theme.colors.secondary}/>
-                                    <ListItem.Content>
-                                        <Text>{item.title}</Text>
-                                    </ListItem.Content>
-                                    <ListItem.Chevron />
-                                </ListItem>
-                            ))
+                            config.drawer_navigators.map((item, i) => {
+                                if(item.title === "Welcome" && token){
+                                    return;
+                                }
+                                return (
+                                    <ListItem
+                                        key={i}
+                                        onPress={() => navigation.navigate(item.navigation)}
+                                        containerStyle={styles.list_item}
+                                    >
+                                        <Icon name={item.icon} color={theme.colors.secondary}/>
+                                        <ListItem.Content>
+                                            <Text>{item.title}</Text>
+                                        </ListItem.Content>
+                                        <ListItem.Chevron />
+                                    </ListItem>
+                                )
+                            })
                         }
                     </View>
                     <View>

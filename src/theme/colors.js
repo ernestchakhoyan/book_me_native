@@ -5,5 +5,6 @@ export default {
     warning:        "#fab258",
     error:          "#d25764",
     appDarkBG:      "#2d2d2d",
-    light:          "#ececec"
+    light:          "#ececec",
+    customText:     "#212121"
 }
