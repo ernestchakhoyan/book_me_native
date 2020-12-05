@@ -57,7 +57,7 @@ function Seats({ route, navigation, theme }) {
     }
 
     const navigateToReservation = (seat) => {
-        navigation.navigate("Reservation", {seat})
+        navigation.navigate("Reservation", {seat, spotId})
     }
 
     return (
