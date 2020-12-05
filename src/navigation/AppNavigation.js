@@ -13,7 +13,8 @@ import {
     Privacy,
     Reservation,
     Reserves,
-    Seats
+    Seats,
+    ReservationSuccess
 } from "../screens";
 import { AppHeader } from "../components";
 import {
@@ -50,6 +51,14 @@ function HomeStack() {
                 component={Reservation}
                 options={{
                     headerShown: true
+                }}
+            />
+            <Stack.Screen
+                name="ReservationSuccess"
+                component={ReservationSuccess}
+                options={{
+                    headerShown: true,
+                    title: "Reservation Success"
                 }}
             />
             <Stack.Screen

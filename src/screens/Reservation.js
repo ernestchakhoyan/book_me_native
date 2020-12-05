@@ -42,7 +42,7 @@ const renderFieldValues = (field, value, t) => {
     }
 };
 
-function Reservation({ route, theme }) {
+function Reservation({ navigation, route, theme }) {
     const { t } = useTranslation();
     const { seat, spotId } = route.params;
 
@@ -64,7 +64,11 @@ function Reservation({ route, theme }) {
             loading: mutationLoading,
             error: mutationError
         }
-    ] = useMutation(RESERVE_MUTATION);
+    ] = useMutation(RESERVE_MUTATION, {
+        onCompleted: () => {
+            navigation.navigate("ReservationSuccess", { date: date.toLocaleString(), name });
+        }
+    });
 
     const onDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -95,6 +99,13 @@ function Reservation({ route, theme }) {
         setUsernameErrorMessage("");
     };
 
+    const resetData = () => {
+        setUsername("");
+        setPhoneNumber("");
+        setNote("");
+        setDate(new Date());
+    };
+
     const handleValidations = () => {
         if (!username.trim().length) {
             setUsernameErrorMessage("This field is required");
@@ -103,7 +114,13 @@ function Reservation({ route, theme }) {
             setPhoneNumberErrorMessage("This field is required");
         }
 
-        return username.trim().length && phoneNumber.trim().length;
+        const phoneValidation = phoneNumber.trim().length !== 12 && phoneNumber.trim().length !== 13 && phoneNumber.trim().length !== 9;
+
+        if(!phoneValidation){
+            return setPhoneNumberErrorMessage("Please enter valid phone number");
+        }
+
+        return username.trim().length && phoneNumber.trim().length && phoneValidation;
     };
 
     if (!route || !route.params || !seat) {
@@ -116,32 +133,43 @@ function Reservation({ route, theme }) {
         );
     }
 
-    const { name, description, images, id,  status } = seat;
+    const { name, description, images, id, status } = seat;
     const handleReservation = async () => {
         resetErrors();
 
-        if(!handleValidations()){
+        if (!handleValidations()) {
             return;
         }
 
-        reserve({
-            variables: {
-                spotId,
-                seatId: id,
-                data: {
-                    fullName: username,
-                    date: date,
-                    phoneNumber,
-                    notes: note,
-                    status,
-                    seatName: name
+        try {
+            await reserve({
+                variables: {
+                    spotId,
+                    seatId: id,
+                    data: {
+                        fullName: username,
+                        date: date,
+                        phoneNumber,
+                        notes: note,
+                        status,
+                        seatName: name
+                    }
                 }
-            }
-        }).catch((error) => {
+            });
+            resetData();
+        } catch (error) {
             setReservationError(RESERVATION_ERROR);
             console.log("Error", error);
-        });
+        }
     };
+
+    React.useEffect(
+        () => navigation.addListener("blur", () => resetData()),
+        []);
+
+    console.log(username,111);
+    console.log(phoneNumber,222);
+    console.log(date,333);
 
     return (
         <Spacer style={centered_screen} spaceMargin={10}>
