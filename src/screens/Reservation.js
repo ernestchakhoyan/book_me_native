@@ -114,13 +114,13 @@ function Reservation({ navigation, route, theme }) {
             setPhoneNumberErrorMessage("This field is required");
         }
 
-        const phoneValidation = phoneNumber.trim().length !== 12 && phoneNumber.trim().length !== 13 && phoneNumber.trim().length !== 9;
+        const phoneValidationError = phoneNumber.trim().length !== 12 && phoneNumber.trim().length !== 13 && phoneNumber.trim().length !== 9;
 
-        if(!phoneValidation){
+        if (phoneValidationError) {
             return setPhoneNumberErrorMessage("Please enter valid phone number");
         }
 
-        return username.trim().length && phoneNumber.trim().length && phoneValidation;
+        return username.trim().length && phoneNumber.trim().length && !phoneValidationError;
     };
 
     if (!route || !route.params || !seat) {
@@ -165,11 +165,8 @@ function Reservation({ navigation, route, theme }) {
 
     React.useEffect(
         () => navigation.addListener("blur", () => resetData()),
-        []);
-
-    console.log(username,111);
-    console.log(phoneNumber,222);
-    console.log(date,333);
+        []
+    );
 
     return (
         <Spacer style={centered_screen} spaceMargin={10}>
@@ -300,6 +297,7 @@ function Reservation({ navigation, route, theme }) {
                             </View>
                             <View style={styles.item}>
                                 <Input
+                                    value={username}
                                     errorMessage={usernameErrorMessage}
                                     errorStyle={{ color: theme.colors.error }}
                                     autoCorrect={false}
@@ -323,6 +321,7 @@ function Reservation({ navigation, route, theme }) {
                             </View>
                             <View style={styles.item}>
                                 <Input
+                                    value={phoneNumber}
                                     errorMessage={phoneNumberErrorMessage}
                                     errorStyle={{ color: theme.colors.error }}
                                     keyboardType="numeric"
@@ -346,6 +345,7 @@ function Reservation({ navigation, route, theme }) {
                             </View>
                             <View style={styles.item}>
                                 <Input
+                                    value={note}
                                     errorMessage={mutationError || reservationErrorMessage}
                                     label={t("notes")}
                                     labelProps={{ style: styles.label }}
