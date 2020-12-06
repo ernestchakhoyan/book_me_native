@@ -1,7 +1,9 @@
 import React from "react";
 import {
+    KeyboardAvoidingView,
     StyleSheet,
-    View
+    View,
+    Platform
 } from "react-native";
 import { useMutation } from "@apollo/client";
 import {
@@ -11,7 +13,7 @@ import {
     withTheme
 } from "react-native-elements";
 
-import { Context as AuthContext} from "../context/AuthContext";
+import { Context as AuthContext } from "../context/AuthContext";
 
 import { Text } from "../components";
 import ScreenWrapper from "../containers/ScreenWrapper";
@@ -19,12 +21,15 @@ import ScreenWrapper from "../containers/ScreenWrapper";
 import { LOGIN } from "../graphql/mutations/authorization";
 import { setItemToStorage } from "../services/storage";
 
-import { centered_screen } from "../styles/common";
+import {
+    button,
+    centered_screen
+} from "../styles/common";
 import { metrics } from "../styles/vars";
 import colors from "../theme/colors";
 
-function Login({ navigation,theme }) {
-    const {signin} = React.useContext(AuthContext);
+function Login({ navigation, theme }) {
+    const { signin } = React.useContext(AuthContext);
     const [ loading, setLoading ] = React.useState(false);
     const [ username, setUsername ] = React.useState("");
     const [ password, setPassword ] = React.useState("");
@@ -38,10 +43,10 @@ function Login({ navigation,theme }) {
         setError("");
     };
 
-    const handleLogin = async() => {
+    const handleLogin = async () => {
         resetError();
 
-        if(!username.trim().length || !password.trim().length){
+        if (!username.trim().length || !password.trim().length) {
             return setError("Username and  password fields are required");
         }
 
@@ -60,61 +65,71 @@ function Login({ navigation,theme }) {
             setLoading(false);
 
             navigation.navigate("Home_");
-        }catch (e){
+        } catch (e) {
             console.log(e);
             setLoading(false);
-            setError("Wrong username or password")
+            setError("Wrong username or password");
         }
     };
 
     return (
-        <ScreenWrapper customStyles={{ ...styles.container }}>
-            <View style={styles.header}>
-                <Text h1 style={{ color: theme.colors.primary }}>
-                    Login
-                </Text>
-                <Text style={styles.subtitle}>
-                    as administrator
-                </Text>
-            </View>
+        <ScreenWrapper>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+                <View style={styles.header}>
+                    <Text h1 style={{ color: theme.colors.primary }}>
+                        Login
+                    </Text>
+                    <Text style={styles.subtitle}>
+                        as administrator
+                    </Text>
+                </View>
 
-            <View style={styles.content}>
-                <Input
-                    placeholder='Username'
-                    onChangeText={text => setUsername(text)}
-                    autoCapitalize="none"
-                    leftIcon={
-                        <Icon
-                            name='user'
-                            type="font-awesome"
-                            size={24}
-                            color={theme.colors.text}
-                        />
-                    }
-                />
-                <Input
-                    placeholder='Password'
-                    secureTextEntry={true}
-                    autoCapitalize="none"
-                    errorMessage={error}
-                    onChangeText={text => setPassword(text)}
-                    leftIcon={
-                        <Icon
-                            name='lock'
-                            type="font-awesome-5"
-                            size={24}
-                            color={theme.colors.text}
-                        />
-                    }
-                />
-                <Button
-                    style={{ ...styles.button, color: colors.light }}
-                    title="Login"
-                    loading={loading}
-                    onPress={handleLogin}
-                />
-            </View>
-
+                <View style={styles.content}>
+                    <Input
+                        placeholder='Username'
+                        onChangeText={text => setUsername(text)}
+                        autoCapitalize="none"
+                        inputStyle={{
+                            color: theme.colors.text
+                        }}
+                        leftIcon={
+                            <Icon
+                                name='user'
+                                type="font-awesome"
+                                size={24}
+                                color={theme.colors.text}
+                            />
+                        }
+                    />
+                    <Input
+                        placeholder='Password'
+                        secureTextEntry={true}
+                        autoCapitalize="none"
+                        errorMessage={error}
+                        onChangeText={text => setPassword(text)}
+                        inputStyle={{
+                            color: theme.colors.text
+                        }}
+                        leftIcon={
+                            <Icon
+                                name='lock'
+                                type="font-awesome-5"
+                                size={24}
+                                color={theme.colors.text}
+                            />
+                        }
+                    />
+                    <Button
+                        style={{ ...button, color: colors.light }}
+                        title="Login"
+                        loading={loading}
+                        onPress={handleLogin}
+                    />
+                </View>
+            </KeyboardAvoidingView>
         </ScreenWrapper>
     );
 }
@@ -122,6 +137,8 @@ function Login({ navigation,theme }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        width: "100%",
+        flexDirection: "column",
         ...centered_screen
     },
     subtitle: {
@@ -136,10 +153,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         width: "100%",
         padding: metrics.spacing_lg()
-    },
-    button: {
-        padding: metrics.spacing_md(),
-        width: 120
     }
 });
 

@@ -50,14 +50,14 @@ function Seats({ route, navigation, theme }) {
         return(
             <ScreenWrapper>
                 <View style={centered_screen}>
-                    <Text h4>{t("No places to display")}</Text>
+                    <Text h4>{t("No seats to display")}</Text>
                 </View>
             </ScreenWrapper>
         )
     }
 
     const navigateToReservation = (seat) => {
-        navigation.navigate("Reservation", {seat})
+        navigation.navigate("Reservation", {seat, spotId})
     }
 
     return (

@@ -1,4 +1,5 @@
 import colors from "../theme/colors";
+import { metrics } from "./vars";
 
 export const centered_screen = {
     flex: 1,
@@ -17,9 +18,12 @@ export const column_view = {
     alignItems: "flex-start",
 }
 
-export const dark_bg = {
-    backgroundColor: colors.appDarkBG
-};
+export const button = {
+    button: {
+        padding: metrics.spacing_md(),
+        width: 120
+    }
+}
 
 export const box_shadow = {
     shadowColor: colors.secondary,
