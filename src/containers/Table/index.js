@@ -9,13 +9,12 @@ import {
 import { useTranslation } from "react-i18next";
 
 import {
-    Icon,
     ListItem,
     SearchBar,
     withTheme
 } from "react-native-elements";
 
-import Text from "../../components/Text";
+import { ReserveActions, Text } from "../../components";
 
 import {
     centered_screen,
@@ -73,7 +72,7 @@ function Table({ data, theme }) {
                                 <ListItem.Content>
                                     <ListItem.Title style={full_width}>
                                             <View style={styles.title}>
-                                                <Text h2 style={{flex: 3}}>
+                                                <Text h3 style={{flex: 3}}>
                                                     {item.fullName}
                                                 </Text>
                                                 <View style={styles.status_bar}>
@@ -97,11 +96,7 @@ function Table({ data, theme }) {
                                         </ListItem.Subtitle>
                                     ): null}
                                 </ListItem.Content>
-                                <Icon
-                                    name="ellipsis-v"
-                                    type="font-awesome"
-                                    color={theme.colors.text}
-                                />
+                                <ReserveActions status={item.status} />
                             </ListItem>
                         ))
                     }

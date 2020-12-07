@@ -6,6 +6,7 @@ import DropdownPicker from "./DropdownPicker";
 import Input from "./Input";
 import UserAvatar from "./UserAvatar";
 import Switcher from "./Switcher";
+import ReserveActions from "./ReserveActions";
 import Text from "./Text";
 
 export {
@@ -17,5 +18,6 @@ export {
     Input,
     UserAvatar,
     Switcher,
+    ReserveActions,
     Text
 };

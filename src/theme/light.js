@@ -10,5 +10,6 @@ export default {
         text:           "#212121",
         card_bg:        "#ffffff",
         searchBar:      "#f6f6f6",
+        menu_bg:        "#ffffff",
     },
 };
