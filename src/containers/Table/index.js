@@ -1,0 +1,140 @@
+import React from "react";
+import {
+    RefreshControl,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    View
+} from "react-native";
+
+import {
+    Icon,
+    ListItem,
+    SearchBar,
+    withTheme
+} from "react-native-elements";
+import { metrics } from "../../styles/vars";
+import Text from "../../components/Text";
+import {
+    centered_screen,
+    full_width
+} from "../../styles/common";
+import { useTranslation } from "react-i18next";
+
+const wait = (timeout) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+    });
+};
+
+function Table({ data, theme }) {
+    const [ refreshing, setRefreshing ] = React.useState(false);
+    const [ search, setSearch ] = React.useState("");
+    const { t } = useTranslation();
+
+    const handleSearch = (text) => {
+        setSearch(text);
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    return (
+            <SafeAreaView style={styles.container}>
+                <View>
+                    <SearchBar
+                        containerStyle={styles.search_wrapper}
+                        placeholder="Search reserve"
+                        onChangeText={handleSearch}
+                        value={search}
+                    />
+                </View>
+                <ScrollView
+                    contentContainerStyle={styles.scroll_view}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            tintColor="red"
+                            progressBackgroundColor="red"
+                        />
+                    }
+                >
+                    {
+                        data.map((item, i) => (
+                            <ListItem key={i} bottomDivider containerStyle={{backgroundColor: theme.colors.card_bg}}>
+                                <ListItem.Content>
+                                    <ListItem.Title style={full_width}>
+                                            <View style={styles.title}>
+                                                <Text h2 style={{flex: 3}}>
+                                                    {item.fullName}
+                                                </Text>
+                                                <View style={styles.status_bar}>
+                                                    <Text>Status: </Text>
+                                                    <Text>{item.status ? t("busy") : t("free")}</Text>
+                                                </View>
+                                            </View>
+                                    </ListItem.Title>
+                                    <ListItem.Subtitle style={styles.sub_title}>
+                                        <Text style={styles.label}>Phone number: </Text>
+                                        <Text>{item.phoneNumber}</Text>
+                                    </ListItem.Subtitle>
+                                    <ListItem.Subtitle style={styles.sub_title}>
+                                        <Text style={styles.label}>Date/Room: </Text>
+                                        <Text>{item.date.toLocaleString()} / {item.seatName} </Text>
+                                    </ListItem.Subtitle>
+                                    {item.notes ? (
+                                        <ListItem.Subtitle style={styles.sub_title}>
+                                            <Text style={styles.label}>Note: </Text>
+                                            <Text>{item.notes}</Text>
+                                        </ListItem.Subtitle>
+                                    ): null}
+                                </ListItem.Content>
+                                <Icon
+                                    name="ellipsis-v"
+                                    type="font-awesome"
+                                    color={theme.colors.text}
+                                />
+                            </ListItem>
+                        ))
+                    }
+                </ScrollView>
+            </SafeAreaView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: "100%",
+        marginTop: metrics.spacing_md(),
+    },
+    scroll_view: {
+        width: "100%",
+    },
+    search_wrapper: {
+        marginBottom: metrics.spacing_md()
+    },
+    title: {
+        width: "100%",
+        flexDirection: "row",
+        flex: 1,
+        justifyContent: "space-between"
+    },
+    status_bar: {
+        ...centered_screen,
+        alignItems: "flex-start",
+        flexDirection: "row",
+    },
+    sub_title:{
+        marginBottom: metrics.spacing
+    },
+    label:{
+        fontWeight: "bold"
+    }
+});
+
+export default withTheme(Table);

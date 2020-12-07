@@ -11,6 +11,10 @@ export const centered = {
     justifyContent: "center",
 };
 
+export const full_width = {
+    width: "100%"
+};
+
 export const column_view = {
     flex: 1,
     flexDirection: "column",
