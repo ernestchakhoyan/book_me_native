@@ -6,6 +6,7 @@ import {
     StyleSheet,
     View
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import {
     Icon,
@@ -13,13 +14,14 @@ import {
     SearchBar,
     withTheme
 } from "react-native-elements";
-import { metrics } from "../../styles/vars";
+
 import Text from "../../components/Text";
+
 import {
     centered_screen,
     full_width
 } from "../../styles/common";
-import { useTranslation } from "react-i18next";
+import { metrics } from "../../styles/vars";
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -46,7 +48,9 @@ function Table({ data, theme }) {
             <SafeAreaView style={styles.container}>
                 <View>
                     <SearchBar
-                        containerStyle={styles.search_wrapper}
+                        containerStyle={{ ...styles.search_wrapper, backgroundColor: theme.colors.screenBG }}
+                        inputContainerStyle={{ backgroundColor: theme.colors.searchBar }}
+                        inputStyle={{color: theme.colors.text}}
                         placeholder="Search reserve"
                         onChangeText={handleSearch}
                         value={search}
@@ -116,6 +120,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     search_wrapper: {
+        backgroundColor: "red",
         marginBottom: metrics.spacing_md()
     },
     title: {
