@@ -24,5 +24,9 @@ export default {
     languages: [
         { name: "Armenian", code: "AM" },
         { name: "English", code: "US" },
+    ],
+    reserve_actions: [
+        {name: "status", icon: "circle-o"},
+        {name: "delete", icon: "trash-o"},
     ]
 };

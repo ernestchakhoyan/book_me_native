@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
 import {
     Icon,
     ListItem,
@@ -30,7 +29,7 @@ function CustomDrawer(props) {
     const { state: { token }} = React.useContext(AuthContext);
     const { t } = useTranslation();
     const { navigation, updateTheme, theme } = props;
-    const [ isEnabled, setIsEnabled ] = useState(false);
+    const [ isEnabled, setIsEnabled ] = React.useState(false);
 
     const toggleSwitch = () => {
         setIsEnabled(previousState => {
@@ -66,7 +65,7 @@ function CustomDrawer(props) {
                                     <ListItem
                                         key={i}
                                         onPress={() => navigation.navigate(item.navigation)}
-                                        containerStyle={styles.list_item}
+                                        containerStyle={{backgroundColor: theme.colors.screenBG}}
                                     >
                                         <Icon name={item.icon} color={theme.colors.secondary}/>
                                         <ListItem.Content>
@@ -96,9 +95,6 @@ const styles = StyleSheet.create({
     },
     list_container: {
         ...column_view,
-        backgroundColor: "rgba(0,0,0,0)"
-    },
-    list_item: {
         backgroundColor: "rgba(0,0,0,0)"
     },
     list_label: {

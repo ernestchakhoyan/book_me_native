@@ -8,6 +8,8 @@ export default {
         screenBG:       "#212121",
         bottomBar:      "#404040",
         text:           "#f6f6f6",
-        card_bg:        "#404040"
+        card_bg:        "#404040",
+        searchBar:      "#000000",
+        menu_bg:        "#000000",
     },
 };

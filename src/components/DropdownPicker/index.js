@@ -1,14 +1,17 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Text } from "react-native-elements";
+import {
+    withTheme
+} from "react-native-elements";
 import Menu, { MenuItem } from "react-native-material-menu";
 import { Flag } from "react-native-svg-flagkit";
 import { useTranslation } from "react-i18next";
 
+import Text from "../Text";
 import config from "../../constants/config";
 import { centered } from "../../styles/common";
 
-function DropdownPicker() {
+function DropdownPicker({theme}) {
     const [ menu, setMenu ] = React.useState(null);
     const [activeLng,setActiveLng] =  React.useState("US");
     const { i18n, t } = useTranslation();
@@ -44,22 +47,21 @@ function DropdownPicker() {
                     width={150}
                 />
             }
+            style={{ backgroundColor: theme.colors.menu_bg }}
         >
             {config.languages.map((item) => {
                 return (
                     <MenuItem
                         onPress={() => handleLngChange(item.code)}
                         key={item.code}
-                        style={styles.menuItem}
+                        style={{ ...styles.menuItem, backgroundColor: theme.colors.menu_bg }}
                     >
                         <Flag
                             id={item.code}
                             size={0.2}
                             height={80}
                         />
-                        <Text style={styles.text}>
-                            {t(item.name)}
-                        </Text>
+                        <Text>{t(item.name)}</Text>
                     </MenuItem>
                 )
             })}
@@ -73,4 +75,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default DropdownPicker;
+export default withTheme(DropdownPicker);
