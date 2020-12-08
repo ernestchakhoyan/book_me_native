@@ -24,8 +24,7 @@ import { Text } from "../components";
 
 import { centered_screen } from "../styles/common";
 
-
-function Reserves({theme}) {
+function Reserves({ theme }) {
     const [ accessToken, setAccessToken ] = React.useState("");
     const { t } = useTranslation();
 
@@ -56,28 +55,52 @@ function Reserves({theme}) {
         }
     });
 
-    const handleUpdate = ({ id, status, seatId, resolve }) => {
+    const handleUpdate = ({ id, status, seatId }) => {
         return updateSeatStatus({
             variables: {
                 id,
                 status,
                 seatId
+            },
+            optimisticResponse: {
+                __typename: "Mutation",
+                updateSeatStatus: {
+                    __typename: "ReserveType",
+                    id,
+                    status
+                }
             }
-        })
-            .then(() => {
-                resolve();
+        }).then(
+            () => {
                 return refetchReserves();
             });
     };
 
-    const handleRemove = ({ id, resolve }) => {
+    const handleRemove = ({ id }) => {
         return removeReservation({
             variables: {
                 id
-            }
-        }).then(() => {
-            resolve();
-            return refetchReserves();
+            },
+            optimisticResponse: {
+                __typename: "Mutation",
+                removeReservation: {
+                    __typename: "ReserveType",
+                    id
+                }
+            },
+            update: (proxy, { data: { removeReservation } }) => {
+                const data = proxy.readQuery({ query: GET_RESERVES });
+                const reserves = [ ...data.reserves.filter((item) => item.id !== removeReservation.id) ];
+
+                setTimeout(() => {
+                    proxy.writeQuery({
+                        query: GET_RESERVES, data: {
+                            reserves
+                        }
+                    });
+                }, 0);
+            },
+            refetchQueries: { query: [ GET_RESERVES ] }
         });
     };
 
@@ -106,8 +129,8 @@ function Reserves({theme}) {
 
     React.useEffect(() => {
         if (called) {
-           const unsubscribe = handleSubscription();
-           return unsubscribe();
+            const unsubscribe = handleSubscription();
+            return unsubscribe();
         }
 
     }, [ called ]);
@@ -116,7 +139,7 @@ function Reserves({theme}) {
         fetchReserves();
     }, []);
 
-    if(loading){
+    if (loading) {
         return (
             <ScreenWrapper>
                 <View style={centered_screen}>
@@ -126,17 +149,17 @@ function Reserves({theme}) {
                     />
                 </View>
             </ScreenWrapper>
-        )
+        );
     }
 
-    if(error || !data){
+    if (error || !data) {
         return (
             <ScreenWrapper>
                 <View style={centered_screen}>
                     <Text h4>{t("No reserves")}</Text>
                 </View>
             </ScreenWrapper>
-        )
+        );
     }
 
     const reserves = data.reserves || [];

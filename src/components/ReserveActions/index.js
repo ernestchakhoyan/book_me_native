@@ -12,7 +12,14 @@ import config from "../../constants/config";
 import Text from "../Text";
 import Switcher from "../Switcher";
 
-function ReserveActions({ theme, status, statusCallback, deleteCallback }) {
+function ReserveActions({
+                            id,
+                            seatId,
+                            status,
+                            statusCallback,
+                            deleteCallback,
+                            theme
+                        }) {
     const [ menu, setMenu ] = React.useState(null);
     const [ statusToggle, setStatusToggle ] = React.useState(!!status);
     const { t } = useTranslation();
@@ -31,11 +38,16 @@ function ReserveActions({ theme, status, statusCallback, deleteCallback }) {
 
     const toggleSwitch = () => {
         setStatusToggle(previousState => {
-            statusCallback();
+            statusCallback({id, seatId, status: +!previousState});
             hideMenu();
             return !previousState;
         });
     };
+
+    const handleRemove = () => {
+        deleteCallback({id});
+        hideMenu();
+    }
 
     return (
         <Menu
@@ -56,7 +68,7 @@ function ReserveActions({ theme, status, statusCallback, deleteCallback }) {
                         key={item.name}
                         containerStyle={{ ...styles.list_item, backgroundColor: theme.colors.menu_bg }}
                         onPress={() => {
-                            item.name !== "status" ? deleteCallback() : null;
+                            item.name !== "status" ? handleRemove() : null;
                         }}
                     >
                         <Text>

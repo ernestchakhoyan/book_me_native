@@ -28,7 +28,7 @@ const wait = (timeout) => {
     });
 };
 
-function Table({ data, theme }) {
+function Table({ data, theme, updateCallback, deleteCallback }) {
     const [ refreshing, setRefreshing ] = React.useState(false);
     const [ search, setSearch ] = React.useState("");
     const { t } = useTranslation();
@@ -86,8 +86,12 @@ function Table({ data, theme }) {
                                         <Text>{item.phoneNumber}</Text>
                                     </ListItem.Subtitle>
                                     <ListItem.Subtitle style={styles.sub_title}>
-                                        <Text style={styles.label}>Date/Room: </Text>
-                                        <Text>{item.date.toLocaleString()} / {item.seatName} </Text>
+                                        <Text style={styles.label}>Date: </Text>
+                                        <Text>{item.date.toLocaleString()}</Text>
+                                    </ListItem.Subtitle>
+                                    <ListItem.Subtitle style={styles.sub_title}>
+                                        <Text style={styles.label}>Room: </Text>
+                                        <Text>{item.seatName}</Text>
                                     </ListItem.Subtitle>
                                     {item.notes ? (
                                         <ListItem.Subtitle style={styles.sub_title}>
@@ -96,7 +100,13 @@ function Table({ data, theme }) {
                                         </ListItem.Subtitle>
                                     ): null}
                                 </ListItem.Content>
-                                <ReserveActions status={item.status} />
+                                <ReserveActions
+                                    id={item.id}
+                                    seatId={item.seatId}
+                                    status={item.status}
+                                    statusCallback={updateCallback}
+                                    deleteCallback={deleteCallback}
+                                />
                             </ListItem>
                         ))
                     }
