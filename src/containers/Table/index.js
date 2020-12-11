@@ -28,8 +28,7 @@ const wait = (timeout) => {
     });
 };
 
-function Table({ data, theme, updateCallback, deleteCallback }) {
-    const [ refreshing, setRefreshing ] = React.useState(false);
+function Table({ data, theme, updateCallback, deleteCallback, loadMoreCallback, refreshing }) {
     const [ search, setSearch ] = React.useState("");
     const { t } = useTranslation();
 
@@ -38,9 +37,7 @@ function Table({ data, theme, updateCallback, deleteCallback }) {
     }
 
     const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-
-        wait(2000).then(() => setRefreshing(false));
+        wait(2000).then(() => loadMoreCallback());
     }, []);
 
     return (

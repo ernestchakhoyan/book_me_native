@@ -23,10 +23,16 @@ import {
 import { Text } from "../components";
 
 import { centered_screen } from "../styles/common";
+import config from "../constants/config";
 
 function Reserves({ theme }) {
     const [ accessToken, setAccessToken ] = React.useState("");
+    const [ refreshing, setRefreshing ] = React.useState(false);
     const { t } = useTranslation();
+
+    const pageToGet = (reservesData && reservesData.length > 0)
+        ? Math.round(reservesData.length / 20) + 1
+        : 1;
 
     const [ getReserves, {
         loading,
@@ -34,7 +40,7 @@ function Reserves({ theme }) {
         data,
         called,
         refetch: refetchReserves,
-        subscribeToMore
+        subscribeToMore,
     } ] = useLazyQuery(GET_RESERVES);
 
     const [ updateSeatStatus ] = useMutation(UPDATE_SEATS_STATUS, {
@@ -89,13 +95,24 @@ function Reserves({ theme }) {
                 }
             },
             update: (proxy, { data: { removeReservation } }) => {
-                const data = proxy.readQuery({ query: GET_RESERVES });
+                const data = proxy.readQuery({
+                    query: GET_RESERVES,
+                    variables: {
+                        page: pageToGet,
+                        limit: config.fetch_limit,
+                    }
+                });
                 const reserves = [ ...data.reserves.filter((item) => item.id !== removeReservation.id) ];
 
                 setTimeout(() => {
                     proxy.writeQuery({
-                        query: GET_RESERVES, data: {
+                        query: GET_RESERVES,
+                        data: {
                             reserves
+                        },
+                        variables: {
+                            page: pageToGet,
+                            limit: config.fetch_limit
                         }
                     });
                 }, 0);
@@ -117,13 +134,20 @@ function Reserves({ theme }) {
     const fetchReserves = async () => {
         const accessToken = await getItemFromStorage("access_token");
         setAccessToken(accessToken);
+
+        console.log(pageToGet);
+
         getReserves({
             fetchPolicy: "cache-and-network",
             context: {
                 headers: {
                     "Authorization": `${accessToken}`
                 }
-            }
+            },
+            variables: {
+                page: pageToGet,
+                limit: config.fetch_limit
+            },
         });
     };
 
@@ -173,6 +197,8 @@ function Reserves({ theme }) {
                 deleteCallback={handleRemove}
                 loading={loading}
                 error={error}
+                refreshing={refreshing}
+                loadMoreCallback={fetchReserves}
             />
         </ScreenWrapper>
     );
