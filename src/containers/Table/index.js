@@ -58,7 +58,7 @@ function Table({ data, theme, updateCallback, deleteCallback, loadMoreCallback, 
                         <RefreshControl
                             refreshing={refreshing}
                             onRefresh={onRefresh}
-                            tintColor="red"
+                            tintColor={theme.colors.primary}
                             progressBackgroundColor="red"
                         />
                     }

@@ -24,15 +24,14 @@ import { Text } from "../components";
 
 import { centered_screen } from "../styles/common";
 import config from "../constants/config";
+import { withApollo } from "@apollo/client/react/hoc";
 
-function Reserves({ theme }) {
+let disableLoadMore = false;
+
+function Reserves({ theme, client }) {
     const [ accessToken, setAccessToken ] = React.useState("");
     const [ refreshing, setRefreshing ] = React.useState(false);
     const { t } = useTranslation();
-
-    const pageToGet = (reservesData && reservesData.length > 0)
-        ? Math.round(reservesData.length / 20) + 1
-        : 1;
 
     const [ getReserves, {
         loading,
@@ -75,11 +74,23 @@ function Reserves({ theme }) {
                     id,
                     status
                 }
+            },
+            update: (cache) => {
+                cache.modify({
+                    fields: {
+                        reserves(reservesRefs) {
+                            return reservesRefs.map((item) => {
+                                if (item.id === updateSeatStatus.id) {
+                                    return { ...item, status };
+                                } else {
+                                    return item;
+                                }
+                            });
+                        },
+                    },
+                });
             }
-        }).then(
-            () => {
-                return refetchReserves();
-            });
+        });
     };
 
     const handleRemove = ({ id }) => {
@@ -93,31 +104,9 @@ function Reserves({ theme }) {
                     __typename: "ReserveType",
                     id
                 }
-            },
-            update: (proxy, { data: { removeReservation } }) => {
-                const data = proxy.readQuery({
-                    query: GET_RESERVES,
-                    variables: {
-                        page: pageToGet,
-                        limit: config.fetch_limit,
-                    }
-                });
-                const reserves = [ ...data.reserves.filter((item) => item.id !== removeReservation.id) ];
-
-                setTimeout(() => {
-                    proxy.writeQuery({
-                        query: GET_RESERVES,
-                        data: {
-                            reserves
-                        },
-                        variables: {
-                            page: pageToGet,
-                            limit: config.fetch_limit
-                        }
-                    });
-                }, 0);
-            },
-            refetchQueries: { query: [ GET_RESERVES ] }
+            }
+        }).then(() => {
+            return refetchReserves();
         });
     };
 
@@ -135,10 +124,11 @@ function Reserves({ theme }) {
         const accessToken = await getItemFromStorage("access_token");
         setAccessToken(accessToken);
 
-        console.log(pageToGet);
+        if (reservesData && reservesData.length > 0 && reservesData.length < 20) {
+            return;
+        }
 
         getReserves({
-            fetchPolicy: "cache-and-network",
             context: {
                 headers: {
                     "Authorization": `${accessToken}`
@@ -149,6 +139,53 @@ function Reserves({ theme }) {
                 limit: config.fetch_limit
             },
         });
+    };
+
+    const loadMore = async () => {
+        //TODO: Change caching  with real  api call
+        if (disableLoadMore) {
+            return;
+        }
+
+        const pageToGet = (reservesData && reservesData.length > 0)
+            ? Math.round(reservesData.length / 20) + 1
+            : 1;
+
+        setRefreshing(true);
+
+        const response = await client.query({
+            query: GET_RESERVES,
+            context: {
+                headers: {
+                    "Authorization": `${accessToken}`
+                }
+            },
+            variables: {
+                page: pageToGet,
+                limit: config.fetch_limit
+            }
+        });
+
+        setRefreshing(false);
+
+        if (!response.data) {
+            return;
+        }
+
+        if (response.data.reserves) {
+            client.cache.modify({
+                fields: {
+                    reserves(reservesRefs) {
+                        return [ ...reservesRefs, ...response.data.reserves ];
+                    },
+                },
+            });
+        }
+
+        if (response.data.reserves.length < config.fetch_limit) {
+            console.log("hello");
+            return disableLoadMore = true;
+        }
     };
 
     React.useEffect(() => {
@@ -189,16 +226,22 @@ function Reserves({ theme }) {
     const reserves = data.reserves || [];
     const reservesData = reserves.length ? reserves.map(o => ({ ...o })) : [];
 
+    const pageToGet = (reservesData && reservesData.length > 0)
+        ? Math.round(reservesData.length / 20) + 1
+        : 1;
+
+    console.log(reservesData.length);
+
     return (
         <ScreenWrapper style={styles.container}>
             <Table
-                data={reservesData.reverse()}
+                data={reservesData}
                 updateCallback={handleUpdate}
                 deleteCallback={handleRemove}
                 loading={loading}
                 error={error}
                 refreshing={refreshing}
-                loadMoreCallback={fetchReserves}
+                loadMoreCallback={loadMore}
             />
         </ScreenWrapper>
     );
@@ -211,4 +254,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default withTheme(Reserves);
+export default withApollo(withTheme(Reserves));

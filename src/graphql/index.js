@@ -38,17 +38,5 @@ const splitLink = split(({ query }) => {
 
 export default new ApolloClient({
     link: splitLink,
-    cache: new InMemoryCache({
-        typePolicies: {
-            Query: {
-                fields: {
-                    reserves: {
-                        merge(existing = [], incoming) {
-                            return incoming;
-                        }
-                    }
-                }
-            }
-        }
-    })
+    cache: new InMemoryCache()
 });
