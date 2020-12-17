@@ -57,6 +57,9 @@ function Reserves({ theme, client }) {
             headers: {
                 "Authorization": `${accessToken}`
             }
+        },
+        onCompleted: () => {
+            return refetchReserves();
         }
     });
 
@@ -74,21 +77,6 @@ function Reserves({ theme, client }) {
                     id,
                     status
                 }
-            },
-            update: (cache) => {
-                cache.modify({
-                    fields: {
-                        reserves(reservesRefs) {
-                            return reservesRefs.map((item) => {
-                                if (item.id === updateSeatStatus.id) {
-                                    return { ...item, status };
-                                } else {
-                                    return item;
-                                }
-                            });
-                        },
-                    },
-                });
             }
         });
     };
@@ -104,9 +92,15 @@ function Reserves({ theme, client }) {
                     __typename: "ReserveType",
                     id
                 }
+            },
+            update: (cache, { data: { removeReservation } }) => {
+                cache.evict({
+                    id: cache.identify({
+                        __typename: "ReserveType",
+                        id: removeReservation?.id,
+                    }),
+                });
             }
-        }).then(() => {
-            return refetchReserves();
         });
     };
 
@@ -135,21 +129,33 @@ function Reserves({ theme, client }) {
                 }
             },
             variables: {
-                page: pageToGet,
+                page: pageToGet || 1,
                 limit: config.fetch_limit
             },
         });
     };
 
     const loadMore = async () => {
-        //TODO: Change caching  with real  api call
-        if (disableLoadMore) {
-            return;
-        }
-
         const pageToGet = (reservesData && reservesData.length > 0)
             ? Math.round(reservesData.length / 20) + 1
             : 1;
+
+        const data = client.readQuery({
+            query: GET_RESERVES,
+            context: {
+                headers: {
+                    "Authorization": `${accessToken}`
+                }
+            },
+            variables: {
+                page: pageToGet - 1,
+                limit: config.fetch_limit
+            }
+        });
+
+        if (disableLoadMore) {
+            return;
+        }
 
         setRefreshing(true);
 
@@ -172,18 +178,26 @@ function Reserves({ theme, client }) {
             return;
         }
 
-        if (response.data.reserves) {
-            client.cache.modify({
-                fields: {
-                    reserves(reservesRefs) {
-                        return [ ...reservesRefs, ...response.data.reserves ];
-                    },
+        if (response?.data?.reserves.length) {
+            const newData = [ ...data.reserves, ...response.data.reserves ];
+            client.writeQuery({
+                query: GET_RESERVES,
+                context: {
+                    headers: {
+                        "Authorization": `${accessToken}`
+                    }
                 },
+                data: {
+                    reserves: newData
+                },
+                variables: {
+                    page: pageToGet - 1,
+                    limit: config.fetch_limit
+                }
             });
         }
 
         if (response.data.reserves.length < config.fetch_limit) {
-            console.log("hello");
             return disableLoadMore = true;
         }
     };
@@ -229,8 +243,6 @@ function Reserves({ theme, client }) {
     const pageToGet = (reservesData && reservesData.length > 0)
         ? Math.round(reservesData.length / 20) + 1
         : 1;
-
-    console.log(reservesData.length);
 
     return (
         <ScreenWrapper style={styles.container}>
