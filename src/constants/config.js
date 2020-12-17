@@ -28,5 +28,6 @@ export default {
     reserve_actions: [
         {name: "status", icon: "circle-o"},
         {name: "delete", icon: "trash-o"},
-    ]
+    ],
+    fetch_limit: 20
 };
