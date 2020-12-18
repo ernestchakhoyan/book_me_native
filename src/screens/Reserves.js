@@ -59,7 +59,7 @@ function Reserves({ theme, client }) {
             }
         },
         onCompleted: () => {
-            return refetchReserves();
+            return loadMore(true);
         }
     });
 
@@ -75,6 +75,7 @@ function Reserves({ theme, client }) {
                 updateSeatStatus: {
                     __typename: "ReserveType",
                     id,
+                    seatId,
                     status
                 }
             }
@@ -94,12 +95,14 @@ function Reserves({ theme, client }) {
                 }
             },
             update: (cache, { data: { removeReservation } }) => {
-                cache.evict({
-                    id: cache.identify({
-                        __typename: "ReserveType",
-                        id: removeReservation?.id,
-                    }),
-                });
+                if(removeReservation.id){
+                    cache.evict({
+                        id: cache.identify({
+                            __typename: "ReserveType",
+                            id: removeReservation?.id,
+                        }),
+                    });
+                }
             }
         });
     };
@@ -135,7 +138,7 @@ function Reserves({ theme, client }) {
         });
     };
 
-    const loadMore = async () => {
+    const loadMore = async (afterRemove) => {
         const pageToGet = (reservesData && reservesData.length > 0)
             ? Math.round(reservesData.length / 20) + 1
             : 1;
@@ -179,7 +182,10 @@ function Reserves({ theme, client }) {
         }
 
         if (response?.data?.reserves.length) {
-            const newData = [ ...data.reserves, ...response.data.reserves ];
+            const newData = afterRemove
+                ? [ ...data.reserves, response.data.reserves[0] ]
+                : [ ...data.reserves, ...response.data.reserves ];
+
             client.writeQuery({
                 query: GET_RESERVES,
                 context: {
@@ -197,7 +203,7 @@ function Reserves({ theme, client }) {
             });
         }
 
-        if (response.data.reserves.length < config.fetch_limit) {
+        if (response.data.reserves.length < config.fetch_limit && !afterRemove) {
             return disableLoadMore = true;
         }
     };
@@ -227,7 +233,7 @@ function Reserves({ theme, client }) {
         );
     }
 
-    if (error || !data) {
+    if (error || !data || !data.reserves.length) {
         return (
             <ScreenWrapper>
                 <View style={centered_screen}>
