@@ -258,7 +258,11 @@ function Reserves({ theme, client }) {
                        return updatedPrevState;
                    }
                }else{
-                   return [...prevState, ...response.data.reserves]
+                   if(loadMore){
+                       return [...prevState, ...response.data.reserves]
+                   }else{
+                       return response.data.reserves;
+                   }
                }
            });
 
