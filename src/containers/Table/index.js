@@ -14,13 +14,17 @@ import {
     withTheme
 } from "react-native-elements";
 
-import { ReserveActions, Text } from "../../components";
+import {
+    ReserveActions,
+    Text
+} from "../../components";
 
 import {
     centered_screen,
     full_width
 } from "../../styles/common";
 import { metrics } from "../../styles/vars";
+import ScreenWrapper from "../ScreenWrapper/index";
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -28,17 +32,26 @@ const wait = (timeout) => {
     });
 };
 
-function Table({ data, theme, updateCallback, deleteCallback, loadMoreCallback, refreshing }) {
-    const [ search, setSearch ] = React.useState("");
+function Table({
+                   data,
+                   theme,
+                   updateCallback,
+                   deleteCallback,
+                   loadMoreCallback,
+                   refreshing,
+                   searchCallback,
+                   searchValue,
+                   searchIsEmpty
+}) {
     const { t } = useTranslation();
 
     const handleSearch = (text) => {
-        setSearch(text);
+        searchCallback(text);
     }
 
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = () => {
         wait(2000).then(() => loadMoreCallback());
-    }, []);
+    };
 
     return (
             <SafeAreaView style={styles.container}>
@@ -49,7 +62,7 @@ function Table({ data, theme, updateCallback, deleteCallback, loadMoreCallback, 
                         inputStyle={{color: theme.colors.text}}
                         placeholder="Search reserve"
                         onChangeText={handleSearch}
-                        value={search}
+                        value={searchValue}
                     />
                 </View>
                 <ScrollView
@@ -63,8 +76,15 @@ function Table({ data, theme, updateCallback, deleteCallback, loadMoreCallback, 
                         />
                     }
                 >
-                    {
-                        data.map((item, i) => (
+                    {searchIsEmpty
+                        ? (
+                                <ScreenWrapper>
+                                    <View style={centered_screen}>
+                                        <Text h4>{t("Could not find reserves")}</Text>
+                                    </View>
+                                </ScreenWrapper>
+                            )
+                        : data.map((item, i) => (
                             <ListItem key={i} bottomDivider containerStyle={{backgroundColor: theme.colors.card_bg}}>
                                 <ListItem.Content>
                                     <ListItem.Title style={full_width}>
