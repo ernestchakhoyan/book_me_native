@@ -64,6 +64,16 @@ function Reserves({ theme, client }) {
         }
     });
 
+    const handleSubscription = () => {
+        return subscribeToMore({
+            document: WS_NEW_RESERVE, updateQuery: (prev, { subscriptionData }) => {
+                return Object.assign({}, prev, {
+                    reserves: [ ...prev.reserves, subscriptionData.data.newReserve ]
+                });
+            }
+        });
+    };
+
     const handleUpdate = ({ id, status, seatId }) => {
         return updateSeatStatus({
             variables: {
@@ -78,6 +88,11 @@ function Reserves({ theme, client }) {
                     id,
                     seatId,
                     status
+                }
+            },
+            update: () => {
+                if(search.trim().length){
+                    return handleUpdateOnSearchedReserves(id, status);
                 }
             }
         });
@@ -107,16 +122,6 @@ function Reserves({ theme, client }) {
             }
         }).then(() => {
             return loadMore(true, id);
-        });
-    };
-
-    const handleSubscription = () => {
-        return subscribeToMore({
-            document: WS_NEW_RESERVE, updateQuery: (prev, { subscriptionData }) => {
-                return Object.assign({}, prev, {
-                    reserves: [ ...prev.reserves, subscriptionData.data.newReserve ]
-                });
-            }
         });
     };
 
@@ -222,8 +227,6 @@ function Reserves({ theme, client }) {
         setRefreshing(true);
         setSearchFinish(false);
 
-        console.log(pageToGet, "page");
-
         const response = await client.query({
             fetchPolicy: "network-only",
             query: GET_RESERVES,
@@ -293,6 +296,17 @@ function Reserves({ theme, client }) {
         }, 1000);
     };
 
+    const handleUpdateOnSearchedReserves = (id,status) => {
+        setSearchedReserves((prevState) => {
+            return prevState.map(item => {
+                if(item.id === id) {
+                    return { ...item, status }
+                }
+                return item;
+            })
+        })
+    }
+
     React.useEffect(() => {
         if (called) {
             const unsubscribe = handleSubscription();
@@ -329,10 +343,9 @@ function Reserves({ theme, client }) {
     }
 
     const reserves = data.reserves || [];
-    const reservesData = searchedReserves.length ? searchedReserves : (reserves.length ? reserves.map(o => ({ ...o }))
-        : []);
-
-    console.log(reservesData.length, "reserves");
+    const reservesData = searchedReserves.length
+        ? searchedReserves
+        : (reserves.length ? reserves.map(o => ({ ...o })) : []);
 
     const pageToGet = (reservesData && reservesData.length > 0)
         ? Math.round(reservesData.length / 20) + 1
