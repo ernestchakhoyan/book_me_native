@@ -10,6 +10,7 @@ import { Provider as AuthProvider } from "./src/context/AuthContext";
 
 import client from "./src/graphql";
 import { ThemeLayout } from "./src/layouts";
+import { SocketWrapper } from "./src/containers";
 import AppNavigation from "./src/navigation/AppNavigation";
 import { themePicker } from "./src/services/theme";
 
@@ -24,7 +25,9 @@ export default function App() {
                 <ThemeProvider theme={themePicker(colorScheme)} useDark={colorScheme === "dark"}>
                     <ThemeLayout>
                         <AuthProvider>
-                            <AppNavigation />
+                            <SocketWrapper>
+                                <AppNavigation />
+                            </SocketWrapper>
                         </AuthProvider>
                     </ThemeLayout>
                 </ThemeProvider>

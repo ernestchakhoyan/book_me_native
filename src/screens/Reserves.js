@@ -30,7 +30,7 @@ let disableLoadMore = false;
 let disableSearchLoadMore = false;
 let typingTimeout = null;
 
-function Reserves({ theme, client }) {
+function Reserves({ navigation, theme, client }) {
     const [ accessToken, setAccessToken ] = React.useState("");
     const [ refreshing, setRefreshing ] = React.useState(false);
     const [ search, setSearch ] = React.useState("");
@@ -311,6 +311,12 @@ function Reserves({ theme, client }) {
         })
     }
 
+    const resetSearch = () => {
+        setSearchFinish(false);
+        setSearchedReserves([]);
+        setSearch("");
+    }
+
     React.useEffect(() => {
         if (called) {
             const unsubscribe = handleSubscription();
@@ -322,6 +328,11 @@ function Reserves({ theme, client }) {
     React.useEffect(() => {
         fetchReserves();
     }, []);
+
+    React.useEffect(
+        () => navigation.addListener("blur", () => resetSearch()),
+        []
+    );
 
     if (loading) {
         return (
