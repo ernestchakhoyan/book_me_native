@@ -27,10 +27,15 @@ import config from "../constants/config";
 import { withApollo } from "@apollo/client/react/hoc";
 
 let disableLoadMore = false;
+let disableSearchLoadMore = false;
+let typingTimeout = null;
 
 function Reserves({ theme, client }) {
     const [ accessToken, setAccessToken ] = React.useState("");
     const [ refreshing, setRefreshing ] = React.useState(false);
+    const [ search, setSearch ] = React.useState("");
+    const [ searchedReserves, setSearchedReserves ] = React.useState([]);
+    const [ searchFinished, setSearchFinish ] = React.useState(false);
     const { t } = useTranslation();
 
     const [ getReserves, {
@@ -38,7 +43,6 @@ function Reserves({ theme, client }) {
         error,
         data,
         called,
-        refetch: refetchReserves,
         subscribeToMore,
     } ] = useLazyQuery(GET_RESERVES);
 
@@ -57,9 +61,6 @@ function Reserves({ theme, client }) {
             headers: {
                 "Authorization": `${accessToken}`
             }
-        },
-        onCompleted: () => {
-            return loadMore(true);
         }
     });
 
@@ -95,7 +96,7 @@ function Reserves({ theme, client }) {
                 }
             },
             update: (cache, { data: { removeReservation } }) => {
-                if(removeReservation.id){
+                if(removeReservation.id && !search.trim().length){
                     cache.evict({
                         id: cache.identify({
                             __typename: "ReserveType",
@@ -104,6 +105,8 @@ function Reserves({ theme, client }) {
                     });
                 }
             }
+        }).then(() => {
+            return loadMore(true, id);
         });
     };
 
@@ -138,7 +141,15 @@ function Reserves({ theme, client }) {
         });
     };
 
-    const loadMore = async (afterRemove) => {
+    const loadMore = async (afterRemove, id) => {
+        if(search){
+            return handleSearchCaching(search, true, afterRemove, id);
+        }
+
+        if (disableLoadMore && !search.trim()) {
+            return;
+        }
+
         const pageToGet = (reservesData && reservesData.length > 0)
             ? Math.round(reservesData.length / 20) + 1
             : 1;
@@ -155,10 +166,6 @@ function Reserves({ theme, client }) {
                 limit: config.fetch_limit
             }
         });
-
-        if (disableLoadMore) {
-            return;
-        }
 
         setRefreshing(true);
 
@@ -208,6 +215,84 @@ function Reserves({ theme, client }) {
         }
     };
 
+    const handleSearchCaching  = async (search, loadMore, afterRemove, id) => {
+        if (disableSearchLoadMore && !afterRemove) {
+            return;
+        }
+        setRefreshing(true);
+        setSearchFinish(false);
+
+        console.log(pageToGet, "page");
+
+        const response = await client.query({
+            fetchPolicy: "network-only",
+            query: GET_RESERVES,
+            context: {
+                headers: {
+                    "Authorization": `${accessToken}`
+                }
+            },
+            variables: {
+                page: loadMore && !afterRemove ? pageToGet : pageToGet - 1,
+                limit: config.fetch_limit,
+                search
+            }
+        });
+        setSearchFinish(true);
+        setRefreshing(false);
+
+        if (!response.data) {
+            return;
+        }
+
+        if (response?.data?.reserves.length) {
+           setSearchedReserves( (prevState)=> {
+               if (afterRemove){
+                   const updatedPrevState = prevState.filter(item => item.id !== id);
+                   if(!disableSearchLoadMore){
+                       return [...updatedPrevState, response.data.reserves[response.data.reserves.length - 1]];
+                   }else{
+                       return updatedPrevState;
+                   }
+               }else{
+                   return [...prevState, ...response.data.reserves]
+               }
+           });
+
+           if(response.data.reserves.length < config.fetch_limit && !afterRemove){
+               disableSearchLoadMore = true;
+           }
+        }else{
+            if(searchedReserves.length){
+                setSearchedReserves( (prevState)=> {
+                    if (afterRemove){
+                        return prevState.filter(item => item.id !== id);
+                    }
+                });
+            }else{
+                setSearchedReserves([]);
+            }
+        }
+    }
+
+    const searchReserve = (query) => {
+        disableSearchLoadMore = false;
+        setSearch(query);
+
+        if(!query.trim().length){
+            setSearchFinish(false);
+            return setSearchedReserves([]);
+        }
+
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+        }
+
+        typingTimeout = setTimeout(() => {
+            return handleSearchCaching(query);
+        }, 1000);
+    };
+
     React.useEffect(() => {
         if (called) {
             const unsubscribe = handleSubscription();
@@ -244,7 +329,10 @@ function Reserves({ theme, client }) {
     }
 
     const reserves = data.reserves || [];
-    const reservesData = reserves.length ? reserves.map(o => ({ ...o })) : [];
+    const reservesData = searchedReserves.length ? searchedReserves : (reserves.length ? reserves.map(o => ({ ...o }))
+        : []);
+
+    console.log(reservesData.length, "reserves");
 
     const pageToGet = (reservesData && reservesData.length > 0)
         ? Math.round(reservesData.length / 20) + 1
@@ -256,10 +344,13 @@ function Reserves({ theme, client }) {
                 data={reservesData}
                 updateCallback={handleUpdate}
                 deleteCallback={handleRemove}
+                searchCallback={searchReserve}
+                searchValue={search}
                 loading={loading}
                 error={error}
                 refreshing={refreshing}
                 loadMoreCallback={loadMore}
+                searchIsEmpty={searchFinished && !searchedReserves.length}
             />
         </ScreenWrapper>
     );
